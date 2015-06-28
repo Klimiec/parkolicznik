@@ -20,7 +20,7 @@ def count_white_pixels():
     img = img.crop(roi['x'], roi['y'], roi['w'], roi['h'])
     img = img.edges(50, 200)
     imgmat = img.getNumpy().flatten()
-    whitepx = cv2.countNonZero(imgmat) / (roi['w'] *  roi['h'])
+    whitepx = cv2.countNonZero(imgmat) / (int(roi['w']) *  int(roi['h']))
     return whitepx
 
 # prepare buffer
