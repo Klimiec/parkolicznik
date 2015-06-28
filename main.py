@@ -1,5 +1,6 @@
 from SimpleCV import *
 import sys
+import time
 
 if len(sys.argv) < 4:
     print "Usage: main.py x y width height"
@@ -13,21 +14,23 @@ roi = {'x': sys.argv[1], 'y': sys.argv[2], 'w': sys.argv[3], 'h': sys.argv[4]}
 n = 20
 buffer = []
 avg = 0
-threshold = 3;
+threshold = 3
+current_diff = 0
 
 def count_white_pixels():
     img = cam.getImage()
     img = img.crop(roi['x'], roi['y'], roi['w'], roi['h'])
     img = img.edges(50, 200)
     imgmat = img.getNumpy().flatten()
-    whitepx = cv2.countNonZero(imgmat) / (int(roi['w']) *  int(roi['h']))
+    whitepx = (cv2.countNonZero(imgmat) * 100) / (int(roi['w']) * int(roi['h']))
     return whitepx
 
 # prepare buffer
 print 'Filling buffer...'
 for i in range(n):
-    buffer.append(count_white_pixels())
-    print 'Amount of elements in buffer: ' + str(len(buffer))
+    current_value = count_white_pixels()
+    buffer.append(current_value)
+    print 'Amount of elements in buffer: ' + str(len(buffer)) + ' | Current value: ' + str(current_value)
 
 avg = sum(buffer)/n
 print 'avg = ' + str(avg)
@@ -40,15 +43,21 @@ while True:
 
     # check parking spot
     if abs(current_diff) > threshold:
-        if current_diff > 0 :
-            print 'Przyjechalo +++'
-        else:
-            print "Odjechalo ---"
+        print 'Waiting 5 sec...'
+        time.sleep(5)
+        whitepx = count_white_pixels()
+        current_diff = avg - whitepx
+        if abs(current_diff) > threshold:
+            if current_diff > 0 :
+                print 'Przyjechalo +++'
+            else:
+                print "Odjechalo ---"
 
-    # update buffor
+    # update buffer
     remove_element = buffer.pop(0)
     buffer.append(whitepx)
-    avg += whitepx/n - remove_element/n
+    avg = sum(buffer)/n
+
 
 
 
