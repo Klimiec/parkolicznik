@@ -24,14 +24,19 @@ def count_white_pixels():
     return whitepx
 
 # prepare buffer
+print 'Filling buffer...'
 for i in range(n):
     buffer.append(count_white_pixels())
+    print 'Amount of elements in buffer: ' + str(len(buffer))
 
 avg = sum(buffer)/n
+print 'avg = ' + str(avg)
 
 while True:
     whitepx = count_white_pixels()
     current_diff = avg - whitepx
+
+    print 'Current: ' + str(whitepx) + "| avg: " + str(avg) + " | Diff: " +  str(current_diff)
 
     # check parking spot
     if abs(current_diff) > threshold:
