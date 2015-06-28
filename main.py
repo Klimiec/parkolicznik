@@ -34,7 +34,7 @@ while True:
     current_diff = avg - whitepx
 
     # check parking spot
-    if abd(current_diff) > threshold:
+    if abs(current_diff) > threshold:
         if current_diff > 0 :
             print 'Przyjechalo +++'
         else:
